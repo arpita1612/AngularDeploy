@@ -1,0 +1,70 @@
+{
+  "name": "dashboard-app",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "node server.js",
+    "heroku-postbuild": "ng build --prod",
+    "build": "ng build"
+  },
+  "private": true,
+  "dependencies": {
+    "@amcharts/amcharts4": "^4.10.17",
+    "@amcharts/amcharts4-fonts": "^4.0.1",
+    "@amcharts/amcharts4-geodata": "^4.1.19",
+    "@angular/animations": "~11.2.5",
+    "@angular/cdk": "^11.2.4",
+    "@angular/cli": "^11.2.5",
+    "@angular/common": "~11.2.5",
+    "@angular/compiler": "~11.2.5",
+    "@angular/compiler-cli": "^11.2.6",
+    "@angular/core": "~11.2.5",
+    "@angular/forms": "~11.2.5",
+    "@angular/material": "^11.2.4",
+    "@angular/platform-browser": "~11.2.5",
+    "@angular/platform-browser-dynamic": "~11.2.5",
+    "@angular/router": "~11.2.5",
+    "@apollo/client": "^3.3.11",
+    "@cubejs-client/core": "^0.26.55",
+    "@cubejs-client/ngx": "^0.26.54",
+    "ag-grid-angular": "^25.1.0",
+    "ag-grid-community": "^25.1.0",
+    "angular-bootstrap-md": "^11.0.0",
+    "angular-gridster2": "^11.1.4",
+    "apollo-angular": "^2.4.0",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link-schema": "^1.2.5",
+    "bootstrap": "^4.6.0",
+    "chart.js": "^2.9.4",
+    "chartjs-plugin-datalabels": "^0.7.0",
+    "express": "^4.17.1",
+    "graphql": "^15.5.0",
+    "graphql-tools": "^5.0.0",
+    "jquery": "^3.6.0",
+    "ng2-charts": "^2.4.2",
+    "ng2-search-filter": "^0.5.1",
+    "ngx-order-pipe": "^2.1.1",
+    "ngx-pagination": "^5.0.0",
+    "path": "^0.12.7",
+    "rxjs": "~6.6.0",
+    "smart-webcomponents-angular": "^9.1.39",
+    "tslib": "^2.0.0",
+    "typescript": "~4.1.5",
+    "zone.js": "~0.11.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1102.3",
+    "@types/node": "^12.11.1"
+  },
+  "cubejsTemplates": {
+    "create-ng-app": "0.0.1",
+    "ng-material-dynamic": "0.0.1",
+    "ng2-charts": "0.0.1",
+    "ng-credentials": "0.0.1"
+  },
+  "engines": {
+    "node": "14.16.0",
+    "npm": "6.14.11"
+  }
+}

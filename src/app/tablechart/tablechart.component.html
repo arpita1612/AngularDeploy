@@ -1,0 +1,139 @@
+<div class="card">
+  <div class="card-body">
+    <div *ngIf="ready && !showChart">
+      <div class="card" style="background-color: lightblue; width: 100%; align-content: center;">
+        <div class="card-body">
+          <div class="card-text">
+            <h5 class="card-title" style="font-size:  20px;font-weight: bold;">{{ title }}</h5>
+            <h1 style="font-size: xx-large; margin-top: 15px;">{{ chartData }} </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-text">
+      <div class="row">
+        <div *ngIf="ready && showChart" class="col-sm-4" style="margin-top: 20px;">
+          <div class="card" style="background-color: lightblue;">
+            <div class="card-body">
+              <div class="card-text">
+                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Number Of Projects for {{MonthYear1}}
+                </h5>
+                <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{MonthCount}}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="ready && showChart" class="col-sm-4" style="margin-top: 20px;">
+          <div class="card" style="background-color: lightblue;">
+            <div class="card-body">
+              <div class="card-text">
+                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Hours worked for {{MonthYear1}}
+                </h5>
+                <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{roundoff(total)}}</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="ready === false" class="d-flex justify-content-center text-dark">
+        <div role="status">
+          <video class="spinner-border"></video>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="ready && showChart" class="input-group" style="margin-top: 30px; margin-bottom: 5px;">
+        <div class="form-outline" >
+          <div class="input-group with-focus" >
+            <input type="search" id="form1" class="form-control text-center" title=" E.g. 2020, 2021-2"
+              style="height: 50px; width: 300px;border-width: 3px;" placeholder="Search by MonthYear" [(ngModel)]="MonthYear"
+              (ngModelChange)="Search()" />
+            <div class="input-group-append">
+              <span class="input-group-text text-muted bg-transparent border-left-0 border-width" style="border-width: 3px;">
+                <i class="fa fa-search"></i>
+            </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <table *ngIf="ready && showChart" class="table table-bordered table-hover table-responsive-sm"
+        style="width: 100%; margin: auto;">
+        <thead class="thead-dark">
+          <tr>
+            <th >
+              Project Name&nbsp;
+            </th>
+            <th (click)="sortTable('TimesheetData.intequivalent')">
+              Hours&nbsp; <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th (click)="sortTable('TimesheetData.monthyear')">
+              MonthYear&nbsp; <i class="fa fa-fw fa-sort"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let user of Details | orderBy : key : reverse | paginate: { id : 'pages', itemsPerPage: 10, currentPage: page, totalItems: MonthCount }">
+            <td>{{user["TimesheetData.projectname"]}}</td>
+            <td>{{roundoff(user["TimesheetData.IntEquivalent"])}}</td>
+            <td>{{user["TimesheetData.monthyear"]}}</td>
+          </tr>
+          <tr>
+            <td>Total Hours</td>
+            <td>{{roundoff(total)}}</td>
+            <td>Month Count = {{MonthCount}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="ready && showChart" style="margin: 15px; margin-left:320px ;">
+        <pagination-controls id="pages" maxSize="10" directionLinks="true" (pageChange)="page = $event">
+        </pagination-controls>
+      </div>
+      <div *ngIf="ready && showChart">
+        <br>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray;">
+        <br>
+      </div>
+
+      <div *ngIf="ready && showChart">
+        <canvas mdbChart baseChart baseChart height="150" [datasets]="chartData1" [labels]="chartLabels"
+          [options]="chartOptions" [colors]="chartColors" [chartType]="chartType" (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)">
+        </canvas>
+        <br>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray; padding: 0%;">
+        <br>
+      </div>
+
+      <div *ngIf="ready && showChart">
+        <div *ngIf="ready === false" class="d-flex justify-content-lg-center text-dark">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <canvas mdbChart baseChart height="150" [datasets]="chartData1" [labels]="chartLabels" [options]="chartOptions"
+          [colors]="chartColors" [chartType]="chartType1" [legend]="true" (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)"></canvas>
+        <br>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray; padding: 0%;"><br>
+      </div>
+
+      <div *ngIf="ready && showChart">
+        <div *ngIf="ready === false" class="d-flex justify-content-lg-center text-dark">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <canvas baseChart height="130" [datasets]="piedata1" [labels]="pielabel1" [options]="PieOptions"
+          [chartType]="chartType3" [legend]="true" (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)">
+        </canvas>
+      </div>
+
+    </div>
+  </div>
+</div>
+<br>
