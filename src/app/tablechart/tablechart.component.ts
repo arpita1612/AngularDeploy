@@ -126,7 +126,7 @@ export class TablechartComponent implements OnInit {
   chartType1 = 'line'
   chartType2 = 'pie'
   chartType3 = 'doughnut'
-  MonthYear1: any = 'All Months:'
+  MonthYear1: any = '2020-21:'
   private dateFormatter = ({ y }) => moment(y);
 
   //Transform data for visualization
@@ -205,7 +205,8 @@ export class TablechartComponent implements OnInit {
 
     this.MonthYear1 = this.MonthYear;
     if (this.MonthYear == "") {
-      this.ready = false
+      this.ready = false;
+      this.MonthYear1 = '2020-21:';
       this.ngOnInit();
     }
     else {
