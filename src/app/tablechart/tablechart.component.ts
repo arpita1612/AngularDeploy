@@ -25,7 +25,8 @@ export class TablechartComponent implements OnInit {
       visible: true
     }
   }
-  MonthYear: any;
+  Year: any = "";
+  Month: any = "";
   @Input() chartType;
   @Input() query1;
   @Input() title;
@@ -38,7 +39,7 @@ export class TablechartComponent implements OnInit {
   pielabel1: any;
   piedata1: any;
   arryobj: {};
-
+  enumMonth = { "-1": "January", "-2": "February", "-3": "March", "-4": "April", "-5": "May", "-6": "June", "-7": "July", "-8": "August", "-9": "September", "-10": "October", "-11": "November", "-12": "December" }
   constructor(private cubejs: CubejsClient) { }
 
   public chartData;
@@ -73,7 +74,7 @@ export class TablechartComponent implements OnInit {
     legend: {
       position: "left",
       align: "start",
-      display : false,
+      display: false,
       labels: {
         fontcolor: 'green'
       }
@@ -102,7 +103,7 @@ export class TablechartComponent implements OnInit {
       },
     },
   };
- Details: any;
+  Details: any;
   public chartColors: any = [
     {
       borderColor: "#4D5360",
@@ -126,7 +127,8 @@ export class TablechartComponent implements OnInit {
   chartType1 = 'line'
   chartType2 = 'pie'
   chartType3 = 'doughnut'
-  MonthYear1: any = '2020-21:'
+  Year1: any = '2020-21:'
+  Month1: any;
   private dateFormatter = ({ y }) => moment(y);
 
   //Transform data for visualization
@@ -165,9 +167,9 @@ export class TablechartComponent implements OnInit {
 
     this.piedata1 = this.piedata
     this.pielabel = resultSet.chartPivot().map((row) => row.x);
-    
+
     this.pielabel1 = this.pielabel
-  
+
     this.arryobj = {}
     this.pielabel.forEach((keyname, index) => {
       this.piedata[0].data.forEach((value, index1) => {
@@ -203,27 +205,57 @@ export class TablechartComponent implements OnInit {
 
   Search() {
 
-    this.MonthYear1 = this.MonthYear;
-    if (this.MonthYear == "") {
+    this.Year1 = this.Year;
+    this.Month1 = this.Month == "" ? "" : this.enumMonth[this.Month] + " ";
+    if (this.Year == "" && this.Month == "") {
       this.ready = false;
-      this.MonthYear1 = '2020-21:';
-      this.ngOnInit();
+      this.Year1 = '2020-21:';
+      this.resultChanged = this.resultChanged.bind(this);
     }
     else {
       {
+        if (this.Year == "") {
+          this.Year1 = '';
+          this.Month1 = this.enumMonth[this.Month];
+        }
         this.Details = this.chartData[0].data.filter((res: any) => {
-          return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.MonthYear.toLocaleLowerCase());
+          return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
         })
         this.total = this.Details.reduce((sum, item) => sum + item["TimesheetData.IntEquivalent"], 0);
-        this.MonthCount =Object.keys(this.Details).length
+        this.MonthCount = Object.keys(this.Details).length
 
         this.chartLabels = this.chartLabels1.filter((res: any) => {
-          return res.toLocaleLowerCase().match(this.MonthYear.toLocaleLowerCase());
+          return res.toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
         })
 
         var globalData = []
         this.pielabel1 = this.pielabel.filter((res: any) => {
-          return res.toLocaleLowerCase().match(this.MonthYear.toLocaleLowerCase());
+          return res.toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
+        })
+
+        for (var key of Object.keys(this.arryobj)) {
+          this.pielabel1.forEach(element => {
+            if (element == key) {
+              globalData.push(this.arryobj[key])
+            }
+          });
+        }
+        this.piedata1[0].data = globalData;
+
+        //Filter for month.
+        this.Details = this.Details.filter((res: any) => {
+          return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.Month.toLocaleLowerCase());
+        })
+        this.total = this.Details.reduce((sum, item) => sum + item["TimesheetData.IntEquivalent"], 0);
+        this.MonthCount = Object.keys(this.Details).length
+
+        this.chartLabels = this.chartLabels.filter((res: any) => {
+          return res.toLocaleLowerCase().match(this.Month.toLocaleLowerCase());
+        })
+
+        var globalData = []
+        this.pielabel1 = this.pielabel.filter((res: any) => {
+          return res.toLocaleLowerCase().match(this.Month.toLocaleLowerCase());
         })
 
         for (var key of Object.keys(this.arryobj)) {
