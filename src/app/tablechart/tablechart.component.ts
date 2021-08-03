@@ -218,6 +218,8 @@ export class TablechartComponent implements OnInit {
           this.Year1 = '';
           this.Month1 = this.enumMonth[this.Month];
         }
+        console.log(this.chartData[0].data[0]["TimesheetData.projectname"]);
+        
         this.Details = this.chartData[0].data.filter((res: any) => {
           return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
         })
@@ -242,6 +244,8 @@ export class TablechartComponent implements OnInit {
         }
         this.piedata1[0].data = globalData;
 
+        console.log(this.Details);
+        
         //Filter for month.
         this.Details = this.Details.filter((res: any) => {
           return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.Month.toLocaleLowerCase());

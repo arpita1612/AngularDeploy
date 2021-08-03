@@ -12,22 +12,22 @@
     </div>
     <div class="card-text">
       <div class="row">
-        <div *ngIf="ready && showChart" class="col-sm-4" style="margin-top: 20px;">
+        <div *ngIf="ready && showChart" class="col-lg-5" style="margin-top: 20px;">
           <div class="card" style="background-color: lightblue;">
             <div class="card-body">
               <div class="card-text">
-                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Number Of Projects for <br> {{Month1}}{{Year1}}
+                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Number Of Projects for {{Month1}}{{Year1}}
                 </h5>
                 <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{MonthCount}}</h1>
               </div>
             </div>
           </div>
         </div>
-        <div *ngIf="ready && showChart" class="col-sm-4" style="margin-top: 20px;">
+        <div *ngIf="ready && showChart" class="col-lg-5" style="margin-top: 20px;">
           <div class="card" style="background-color: lightblue;">
             <div class="card-body">
               <div class="card-text">
-                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Hours worked for <br>{{Month1}}{{Year1}}
+                <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Hours worked for {{Month1}}{{Year1}}
                 </h5>
                 <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{roundoff(total)}}</h1>
               </div>
