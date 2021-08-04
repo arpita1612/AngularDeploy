@@ -40,8 +40,10 @@ export class TablechartComponent implements OnInit {
   piedata1: any;
   arryobj: {};
   enumMonth = { "-1": "January", "-2": "February", "-3": "March", "-4": "April", "-5": "May", "-6": "June", "-7": "July", "-8": "August", "-9": "September", "-10": "October", "-11": "November", "-12": "December" }
+  projectCount: number;
   constructor(private cubejs: CubejsClient) { }
-
+  public chartClicked(e: any): void { }
+  public chartHovered(e: any): void { }x
   public chartData;
   chartData1;
   public chartLabels = [];
@@ -147,14 +149,10 @@ export class TablechartComponent implements OnInit {
     this.Details = this.chartData[0].data;
     this.total = this.Details.reduce((sum: any, item: { [x: string]: any; }) => sum + item["TimesheetData.IntEquivalent"], 0);
     this.MonthCount = Object.keys(this.Details).length
+    this.projectCount = [...new Set(this.Details.map(item => item["TimesheetData.projectname"]))].length
     this.Finalcount = this.MonthCount;
-    this.chartData1 = resultSet.series().map((item) => {
-      return {
-        label: item.title,
-        data: item.series.map(({ value }) => value),
-        stack: 'a',
-      };
-    });
+    
+    this.chartData1 =this.getChartData(resultSet)
     this.chartLabels1 = resultSet.chartPivot().map((row) => row.x);
     this.chartLabels = this.chartLabels1
     this.piedata = resultSet.series().map((item) => {
@@ -203,6 +201,15 @@ export class TablechartComponent implements OnInit {
 
   }
 
+  getChartData(resultSet){
+    return resultSet.series().map((item) => {
+      return {
+        label: item.title,
+        data: item.series.map(({ value }) => value),
+        stack: 'a',
+      };
+    });
+  }
   Search() {
 
     this.Year1 = this.Year;
@@ -215,10 +222,9 @@ export class TablechartComponent implements OnInit {
     else {
       {
         if (this.Year == "") {
-          this.Year1 = '';
+          this.Year1 = ' 2020-21';
           this.Month1 = this.enumMonth[this.Month];
         }
-        console.log(this.chartData[0].data[0]["TimesheetData.projectname"]);
         
         this.Details = this.chartData[0].data.filter((res: any) => {
           return res["TimesheetData.monthyear"].toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
@@ -229,7 +235,7 @@ export class TablechartComponent implements OnInit {
         this.chartLabels = this.chartLabels1.filter((res: any) => {
           return res.toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
         })
-
+        // console.log(this.chartLabels, this.chartData1)
         var globalData = []
         this.pielabel1 = this.pielabel.filter((res: any) => {
           return res.toLocaleLowerCase().match(this.Year.toLocaleLowerCase());
@@ -243,8 +249,6 @@ export class TablechartComponent implements OnInit {
           });
         }
         this.piedata1[0].data = globalData;
-
-        console.log(this.Details);
         
         //Filter for month.
         this.Details = this.Details.filter((res: any) => {
@@ -252,13 +256,13 @@ export class TablechartComponent implements OnInit {
         })
         this.total = this.Details.reduce((sum, item) => sum + item["TimesheetData.IntEquivalent"], 0);
         this.MonthCount = Object.keys(this.Details).length
-
+        this.projectCount = [...new Set(this.Details.map(item => item["TimesheetData.projectname"]))].length
         this.chartLabels = this.chartLabels.filter((res: any) => {
           return res.toLocaleLowerCase().match(this.Month.toLocaleLowerCase());
         })
-
+        
         var globalData = []
-        this.pielabel1 = this.pielabel.filter((res: any) => {
+        this.pielabel1 = this.pielabel1.filter((res: any) => {
           return res.toLocaleLowerCase().match(this.Month.toLocaleLowerCase());
         })
 

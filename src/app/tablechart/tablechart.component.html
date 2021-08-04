@@ -18,7 +18,7 @@
               <div class="card-text">
                 <h5 class="card-title" style="font-size:  20px;font-weight: bold;">Number Of Projects for {{Month1}}{{Year1}}
                 </h5>
-                <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{MonthCount}}</h1>
+                <h1 height="300" style="font-size: xx-large; margin-top: 5px;">{{projectCount}}</h1>
               </div>
             </div>
           </div>
@@ -45,16 +45,6 @@
 
       <div *ngIf="ready && showChart" class="input-group" style="margin-top: 30px; margin-bottom: 5px;">
         <div class="form-outline row">
-          <!-- <div class="input-group with-focus" >
-            <input type="search" id="form1" class="form-control text-center" title=" E.g. 2020, 2021-2"
-              style="height: 50px; width: 300px;border-width: 3px;" placeholder="Search by MonthYear" [(ngModel)]="MonthYear"
-              (ngModelChange)="Search()" />
-            <div class="input-group-append">
-              <span class="input-group-text text-muted bg-transparent border-left-0 border-width" style="border-width: 3px;">
-                <i class="fa fa-search"></i>
-            </span>
-            </div>
-          </div> -->
           <div class="col-sm-6">
             <label for="Year">Year:</label>
             <select name="SelectYear" id="year" class="form-control" [(ngModel)]="Year" (ngModelChange)="Search()">
