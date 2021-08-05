@@ -55,25 +55,7 @@ export class DashboardComponent implements OnInit {
     // },
     // "limit": 300
   };
-  
-  // public usersQuery = {
-  //   measures: ["TimesheetData.count"],
-  //   segments: ['TimesheetData.SATaxi'],
-  //   timeDimensions: [],
-  //   order: {},
-  //   dimensions: ["TimesheetData.projectname"],
-  //   // filters: [
-  //   //   {
-  //   //     "member": "TimesheetData.projectname",
-  //   //     "operator": "contains",
-  //   //     "values": [
-  //   //       "SA taxi"
-  //   //     ]
-  //   //   }
-  //   // ]
-
-  // };
-
+ 
   dashboardItems = new BehaviorSubject<any[]>([]);
   options: Safe;
   onLayoutChange = (event) => {

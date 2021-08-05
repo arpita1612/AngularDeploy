@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import * as moment from "moment";
 import chartDataLabels from 'chartjs-plugin-datalabels'
 import { TableComponent } from 'smart-webcomponents-angular/table';
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-tablechart',
@@ -14,22 +15,12 @@ import { TableComponent } from 'smart-webcomponents-angular/table';
 export class TablechartComponent implements OnInit {
 
   @ViewChild('table', { read: TableComponent, static: false }) table!: TableComponent;
-  sorting = {
-    enabled: true,
-    mode: 'one'
-  }
-
-  filtering: {
-    enabled: true,
-    filterRow: {
-      visible: true
-    }
-  }
-  Year: any = "";
-  Month: any = "";
   @Input() chartType;
   @Input() query1;
   @Input() title;
+  
+  Year: String = "";
+  Month: any = "";
   chartLabels1: any;
   label: any = chartDataLabels;
   piedata: any;
@@ -41,13 +32,21 @@ export class TablechartComponent implements OnInit {
   arryobj: {};
   enumMonth = { "-1": "January", "-2": "February", "-3": "March", "-4": "April", "-5": "May", "-6": "June", "-7": "July", "-8": "August", "-9": "September", "-10": "October", "-11": "November", "-12": "December" }
   projectCount: number;
-  constructor(private cubejs: CubejsClient) { }
-  public chartClicked(e: any): void { }
-  public chartHovered(e: any): void { }x
+  private querySubject;
+  ready = false;
+  total: any;
+  Finalcount: any;
+  MonthCount: any;
+  page: number = 1;
+  ArrayData: any;
+  chartType1 = 'line'
+  chartType3 = 'doughnut'
+  Year1: any = '2020-21:'
+  Month1: any;
   public chartData;
   chartData1;
   public chartLabels = [];
-  public chartOptions: any = {
+  public chartOptions: ChartOptions = {
     legend: {
       position: "bottom",
       align: "center",
@@ -112,81 +111,11 @@ export class TablechartComponent implements OnInit {
       backgroundColor: "#949FB1"
     }
   ];
-  public chartColors1: any = [
-    {
-      borderColor: "white",
-      backgroundColor: "#949FB1"
-    }
-  ];
 
-  private querySubject;
-  ready = false;
-  total: any;
-  Finalcount: any;
-  MonthCount: any;
-  page: number = 1;
-  ArrayData: any;
-  chartType1 = 'line'
-  chartType2 = 'pie'
-  chartType3 = 'doughnut'
-  Year1: any = '2020-21:'
-  Month1: any;
-  private dateFormatter = ({ y }) => moment(y);
+  constructor(private cubejs: CubejsClient) { }
+  public chartClicked(e: any): void { }
+  public chartHovered(e: any): void { }
 
-  //Transform data for visualization
-  commonSetup(resultSet) {
-
-    this.chartData = resultSet.seriesNames().map(({ key, title }) => ({
-      data: resultSet.backwardCompatibleData[0],
-      label: title
-
-    }));
-
-    this.chartLabels.length = 0;
-    for (let i = resultSet.backwardCompatibleData[0].length - 1; i >= 0; i--) {
-      this.chartLabels.push(resultSet.backwardCompatibleData[0][i]["TimesheetData.projectname"]);
-    }
-    this.Details = this.chartData[0].data;
-    this.total = this.Details.reduce((sum: any, item: { [x: string]: any; }) => sum + item["TimesheetData.IntEquivalent"], 0);
-    this.MonthCount = Object.keys(this.Details).length
-    this.projectCount = [...new Set(this.Details.map(item => item["TimesheetData.projectname"]))].length
-    this.Finalcount = this.MonthCount;
-    
-    this.chartData1 =this.getChartData(resultSet)
-    this.chartLabels1 = resultSet.chartPivot().map((row) => row.x);
-    this.chartLabels = this.chartLabels1
-    this.piedata = resultSet.series().map((item) => {
-      return {
-        label: item.title,
-        data: item.series.map(({ value }) => value),
-        stack: 'a',
-      };
-    });
-
-    this.piedata1 = this.piedata
-    this.pielabel = resultSet.chartPivot().map((row) => row.x);
-
-    this.pielabel1 = this.pielabel
-
-    this.arryobj = {}
-    this.pielabel.forEach((keyname, index) => {
-      this.piedata[0].data.forEach((value, index1) => {
-        if (index == index1)
-          this.arryobj[keyname] = value;
-      });
-    });
-  }
-  private numberFormatter = x => x.toLocaleString();
-  resultChanged(resultSet) {
-    this.commonSetup(resultSet);
-
-    if (this.chartType === "singleValue") {
-      this.chartData = this.numberFormatter(
-        resultSet.chartPivot()[0][resultSet.seriesNames()[0].key]
-      );
-    }
-    this.ready = true;
-  }
   ngOnInit(): void {
 
     this.showChart = this.chartType !== "singleValue";
@@ -201,6 +130,70 @@ export class TablechartComponent implements OnInit {
 
   }
 
+  //Transform data for visualization
+  commonSetup(resultSet) {
+
+    this.chartData = resultSet.seriesNames().map(({ key, title }) => ({
+      data: resultSet.backwardCompatibleData[0],
+      label: title
+
+    }));
+
+  this.getChartLabel(resultSet);
+    //Get data for pie chart.
+    this.piedata = resultSet.series().map((item) => {
+      return {
+        label: item.title,
+        data: item.series.map(({ value }) => value),
+        stack: 'a',
+      };
+    });
+
+    //Get labels for pie chart seperatly.
+    this.piedata1 = this.piedata
+    this.pielabel = resultSet.chartPivot().map((row) => row.x);
+
+    this.pielabel1 = this.pielabel
+
+    this.arryobj = {}
+    this.pielabel.forEach((keyname, index) => {
+      this.piedata[0].data.forEach((value, index1) => {
+        if (index == index1)
+          this.arryobj[keyname] = value;
+      });
+    });
+  }
+
+
+  private numberFormatter = x => x.toLocaleString();
+  resultChanged(resultSet) {
+    this.commonSetup(resultSet);
+
+    if (this.chartType === "singleValue") {
+      this.chartData = this.numberFormatter(
+        resultSet.chartPivot()[0][resultSet.seriesNames()[0].key]
+      );
+    }
+    this.ready = true;
+  }
+
+  getChartLabel(resultSet){
+    this.chartLabels.length = 0;
+    for (let i = resultSet.backwardCompatibleData[0].length - 1; i >= 0; i--) {
+      this.chartLabels.push(resultSet.backwardCompatibleData[0][i]["TimesheetData.projectname"]);
+    }
+    this.Details = this.chartData[0].data;
+    this.total = this.Details.reduce((sum: any, item: { [x: string]: any; }) => sum + item["TimesheetData.IntEquivalent"], 0);
+    this.MonthCount = Object.keys(this.Details).length
+    this.projectCount = [...new Set(this.Details.map(item => item["TimesheetData.projectname"]))].length
+    this.Finalcount = this.MonthCount;
+    
+    this.chartData1 =this.getChartData(resultSet)
+    this.chartLabels1 = resultSet.chartPivot().map((row) => row.x);
+    this.chartLabels = this.chartLabels1
+
+  }
+
   getChartData(resultSet){
     return resultSet.series().map((item) => {
       return {
@@ -210,6 +203,7 @@ export class TablechartComponent implements OnInit {
       };
     });
   }
+
   Search() {
 
     this.Year1 = this.Year;
@@ -277,6 +271,7 @@ export class TablechartComponent implements OnInit {
       }
     }
   }
+
   key: string;
   reverse: boolean = false;
   sortTable(key: string) {
